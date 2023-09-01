@@ -34,14 +34,13 @@ class Code:
 
 	def comp(self, mnemonic):
 		"""Return the binary code of the 'comp' mnemonic."""
-		comp_binary = ''
+		comp_binary = '0'
 
 		if 'A' in mnemonic or 'M' in mnemonic:
 			if 'A' in mnemonic:
-				comp_binary += '0'
 				mnemonic = mnemonic.replace('A', 'AM')
 			elif 'M' in mnemonic:
-				comp_binary += '1'
+				comp_binary = '1'
 				mnemonic = mnemonic.replace('M', 'AM')
 
 		comp_binary += instruction_set['comp'][mnemonic]
