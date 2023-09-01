@@ -1,3 +1,12 @@
+"""Parser module of the assembler.
+
+Classes:
+	Parser
+"""
+
+from constants import *
+
+
 class Parser:
 	"""Parser class of Hack Assembler.
 
@@ -7,8 +16,13 @@ class Parser:
 	skipping comments and whitespace,
 	and breaking each symbolic instruction into its underlying components.
 
+	Properties:
+		file: file object containing the source code
+		current_instruction: the instruction currently being processed
+
 	Methods:
 		advance() -> None
+		instruction_type() -> str
 	"""
 
 	def __init__(self, file):
@@ -34,3 +48,15 @@ class Parser:
 					return
 			else:
 				self.current_instruction += char
+
+
+	def instruction_type(self):
+		"""Returns the type of the current instruction"""
+		first_char = self.current_instruction[0]
+
+		if first_char == '@':
+			return A_INSTRUCTION
+		elif first_char == '(':
+			return L_INSTRUCTION
+		else:
+			return C_INSTRUCTION
