@@ -24,6 +24,9 @@ class Parser:
 		advance() -> None
 		instruction_type() -> str
 		symbol() -> str
+		dest() -> str
+		comp() -> str
+		jump() -> str
 	"""
 
 	def __init__(self, file):
@@ -72,3 +75,44 @@ class Parser:
 			return self.current_instruction[1::]
 		elif self.instruction_type() == L_INSTRUCTION:			
 			return self.current_instruction[1:-1:]
+
+
+	def dest(self):
+		"""Return the symbolic 'dest' part of the current C-instruction."""
+		dest_field = ''
+		
+		for char in self.current_instruction:
+			if char == ' ':
+				continue
+			if char == '=':
+				return dest_field
+			dest_field += char
+		
+		return ''
+
+
+	def comp(self):
+		"""Return the symbolic 'comp' part of the current C-instruction."""
+		comp_field = ''
+		start = 0
+
+		if self.dest():
+			start = self.current_instruction.find('=') + 1
+		
+		for char in self.current_instruction[start::]:
+			if char == ';':
+				break
+			comp_field += char
+
+		return comp_field
+
+
+	def jump(self):
+		"""Return the symbolic 'jump' part of the current C-instruction."""
+		jump_field = ''
+		start = self.current_instruction.find(';') + 1
+		
+		if not start:
+			return jump_field
+
+		return self.current_instruction[start::]
