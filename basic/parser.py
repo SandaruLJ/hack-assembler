@@ -49,9 +49,11 @@ class Parser:
 				self.file.readline()
 			elif char == '\n':
 				if self.current_instruction:
-					return
+					return True
 			else:
 				self.current_instruction += char
+
+		return False
 
 
 	def instruction_type(self):
