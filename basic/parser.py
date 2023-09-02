@@ -46,6 +46,8 @@ class Parser:
 				continue
 			elif char == '/':
 				# ignore comments
+				if self.current_instruction:
+					return True
 				self.file.readline()
 			elif char == '\n':
 				if self.current_instruction:
