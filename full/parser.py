@@ -27,6 +27,7 @@ class Parser:
 		dest() -> str
 		comp() -> str
 		jump() -> str
+		reset() -> None
 	"""
 
 	def __init__(self, file):
@@ -120,3 +121,8 @@ class Parser:
 			return jump_field
 
 		return self.current_instruction[start::]
+
+
+	def reset(self):
+		"""Reset file position"""
+		self.file.seek(0)

@@ -4,6 +4,7 @@ import sys
 
 from parser import Parser
 from code import Code
+from symbol_table import SymbolTable
 from constants import *
 
 
@@ -18,15 +19,45 @@ def main():
 		with open(f'{source_filename}.hack', 'w') as output:
 			parser = Parser(source)
 			code = Code()
-			instruction = ''
+			symbols = SymbolTable()
+
+			# pass 1
+			current_line = 0
 
 			while parser.advance():
 				ins_type = parser.instruction_type()
 				
+				if ins_type == L_INSTRUCTION:
+					symbol = parser.symbol()
+					if not symbols.contains(symbol):
+						symbols.add_entry(symbol, current_line)
+				else:
+					current_line += 1
+
+			# reset file position
+			parser.reset()
+
+			# pass 2
+			current_ram_addr = 16
+			
+			while parser.advance():
+				instruction = ''
+				ins_type = parser.instruction_type()
+				
+				if ins_type == L_INSTRUCTION:
+					continue
+
 				if ins_type == A_INSTRUCTION:
 					symbol = parser.symbol()
-					if symbol.isdigit():
-						instruction = bin(int(symbol))[2::].zfill(16)
+					
+					if symbols.contains(symbol):
+						symbol = str(symbols.get_address(symbol))
+					elif not symbol.isdigit():
+						symbols.add_entry(symbol, current_ram_addr)
+						symbol = current_ram_addr
+						current_ram_addr += 1
+					
+					instruction = bin(int(symbol))[2::].zfill(16)
 
 				elif ins_type == C_INSTRUCTION:
 					# parse instruction fields
